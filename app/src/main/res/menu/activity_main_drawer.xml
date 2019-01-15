@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_home"
+            android:icon="@drawable/ic_home"
+            android:title="@string/home" />
+        <item
+            android:id="@+id/nav_sales_record"
+            android:icon="@drawable/ic_attach_money"
+            android:title="@string/sales_record" />
+        <item
+            android:id="@+id/nav_enable_sound"
+            android:icon="@drawable/ic_music_note"
+            android:title="@string/enable_sound"
+            app:actionLayout="@layout/drawer_switch" />
+    </group>
+    <item android:title="">
+        <menu>
+            <item
+                android:id="@+id/nav_about"
+                android:icon="@drawable/ic_info"
+                android:title="@string/about" />
+        </menu>
+    </item>
+</menu>

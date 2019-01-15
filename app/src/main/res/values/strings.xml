@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">TradeTrack</string>
+    <string name="add_item_activity_label">Add Item</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+    <string name="edit_item_content_description">Edit Item</string>
+    <string name="record_sale_content_description">Record Sale</string>
+    <string name="edit_item_name_hint">Item</string>
+    <string name="edit_cost_price_hint">Cost Price</string>
+    <string name="edit_selling_price_hint">Selling Price</string>
+    <string name="edit_quantity_hint">Quantity</string>
+    <string name="home">Home</string>
+    <string name="sales_record">Sales Record</string>
+    <string name="enable_sound">Enable Sound</string>
+    <string name="about">About</string>
+</resources>
