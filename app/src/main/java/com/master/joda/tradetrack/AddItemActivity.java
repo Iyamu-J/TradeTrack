@@ -1,9 +1,11 @@
 package com.master.joda.tradetrack;
 
+import android.content.Intent;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 
@@ -34,6 +36,8 @@ public class AddItemActivity extends AppCompatActivity {
     private FirebaseAuth mFirebaseAuth;
     private DatabaseReference mDatabaseReference;
 
+    String itemId;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,12 +47,18 @@ public class AddItemActivity extends AppCompatActivity {
         mFirebaseAuth = FirebaseAuth.getInstance();
         mDatabaseReference = FirebaseDatabase.getInstance().getReference().child("items");
 
+        Intent intent = getIntent();
+        if (intent.hasExtra(getString(R.string.item_id_extra))) {
+            itemId = intent.getStringExtra(getString(R.string.item_id_extra));
+        } else {
+            itemId = generateId();
+        }
+
         fabAddItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String id = generateId();
                 Item item = new Item(
-                        id,
+                        itemId,
                         editItemName.getText().toString(),
                         editQuantity.getText().toString(),
                         Double.valueOf(editSellingPrice.getText().toString()),
@@ -58,11 +68,22 @@ public class AddItemActivity extends AppCompatActivity {
                 String userId;
                 if (user != null) {
                     userId = user.getUid();
-                    mDatabaseReference.child(userId).child(id).setValue(item);
+                    mDatabaseReference.child(userId)
+                            .child(itemId)
+                            .setValue(item);
                     finish();
                 }
             }
         });
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @NonNull
