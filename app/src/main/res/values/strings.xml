@@ -17,4 +17,7 @@
     <string name="sales_record">Sales Record</string>
     <string name="enable_sound">Enable Sound</string>
     <string name="about">About</string>
+    <string name="sign_in_message">Welcome %s</string>
+    <string name="sign_in_cancelled_message">Sign in cancelled</string>
+    <string name="item_id_extra">ITEM_ID_EXTRA</string>
 </resources>
