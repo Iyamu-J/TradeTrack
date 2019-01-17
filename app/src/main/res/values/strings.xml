@@ -20,4 +20,8 @@
     <string name="sign_in_message">Welcome %s</string>
     <string name="sign_in_cancelled_message">Sign in cancelled</string>
     <string name="item_id_extra">ITEM_ID_EXTRA</string>
+    <string name="item_name_extra">ITEM_NAME_EXTRA</string>
+    <string name="item_quantity_extra">ITEM_QUANTITY_EXTRA</string>
+    <string name="item_cost_price_extra">ITEM_COST_PRICE_EXTRA</string>
+    <string name="item_selling_price_extra">ITEM_SELLING_PRICE_EXTRA</string>
 </resources>

@@ -108,6 +108,8 @@ public class HomeFragment extends Fragment {
                     holder.bind(model);
 
                     final String itemId = model.getId();
+                    final String itemName = model.getName();
+                    final String itemQuantity = model.getQuantity();
                     final double itemCostPrice = model.getCostPrice();
                     final double itemSellingPrice = model.getSellingPrice();
 
@@ -116,6 +118,10 @@ public class HomeFragment extends Fragment {
                         public void onClick(View v) {
                             Intent intent = new Intent(getContext(), AddItemActivity.class);
                             intent.putExtra(getString(R.string.item_id_extra), itemId);
+                            intent.putExtra(getString(R.string.item_name_extra), itemName);
+                            intent.putExtra(getString(R.string.item_quantity_extra), itemQuantity);
+                            intent.putExtra(getString(R.string.item_cost_price_extra), itemCostPrice);
+                            intent.putExtra(getString(R.string.item_selling_price_extra), itemSellingPrice);
                             startActivity(intent);
                         }
                     });
