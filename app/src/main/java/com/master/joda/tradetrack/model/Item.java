@@ -2,7 +2,7 @@ package com.master.joda.tradetrack.model;
 
 public class Item {
 
-    private int id;
+    private String id;
     private String name;
     private String quantity;
     private double sellingPrice;
@@ -12,7 +12,7 @@ public class Item {
 
     }
 
-    public Item(int id, String name, String quantity, double sellingPrice, double costPrice) {
+    public Item(String id, String name, String quantity, double sellingPrice, double costPrice) {
         this.id = id;
         this.name = name;
         this.quantity = quantity;
@@ -20,11 +20,11 @@ public class Item {
         this.costPrice = costPrice;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 

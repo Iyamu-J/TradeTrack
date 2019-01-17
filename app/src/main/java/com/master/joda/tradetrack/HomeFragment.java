@@ -104,7 +104,7 @@ public class HomeFragment extends Fragment {
             protected void onBindViewHolder(@NonNull ViewHolder holder, int position, @NonNull Item model) {
                 holder.bind(model);
 
-                final int itemId = model.getId();
+                final String itemId = model.getId();
                 final double itemCostPrice = model.getCostPrice();
                 final double itemSellingPrice = model.getSellingPrice();
 
