@@ -16,7 +16,8 @@ import android.widget.TextView;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
-import com.google.firebase.database.DatabaseError;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
@@ -66,7 +67,7 @@ public class HomeFragment extends Fragment {
 
         // initialise FirebaseDatabase
         mFirebaseDatabase = FirebaseDatabase.getInstance();
-        mItemsDatabaseReference = mFirebaseDatabase.getReference();
+        mItemsDatabaseReference = mFirebaseDatabase.getReference().child("items");
 
         setupRecyclerView();
 
@@ -92,57 +93,60 @@ public class HomeFragment extends Fragment {
     }
 
     private void setupRecyclerView() {
-        Query query = mItemsDatabaseReference.child("");
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            Query query = mItemsDatabaseReference.child(user.getUid());
 
-        FirebaseRecyclerOptions<Item> options =
-                new FirebaseRecyclerOptions.Builder<Item>()
-                        .setQuery(query, Item.class)
-                        .build();
+            FirebaseRecyclerOptions<Item> options =
+                    new FirebaseRecyclerOptions.Builder<Item>()
+                            .setQuery(query, Item.class)
+                            .build();
 
-        mAdapter = new FirebaseRecyclerAdapter<Item, ViewHolder>(options) {
-            @Override
-            protected void onBindViewHolder(@NonNull ViewHolder holder, int position, @NonNull Item model) {
-                holder.bind(model);
+            mAdapter = new FirebaseRecyclerAdapter<Item, ViewHolder>(options) {
+                @Override
+                protected void onBindViewHolder(@NonNull ViewHolder holder, int position, @NonNull Item model) {
+                    holder.bind(model);
 
-                final String itemId = model.getId();
-                final double itemCostPrice = model.getCostPrice();
-                final double itemSellingPrice = model.getSellingPrice();
+                    final String itemId = model.getId();
+                    final double itemCostPrice = model.getCostPrice();
+                    final double itemSellingPrice = model.getSellingPrice();
 
-                holder.mEditItem.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Intent intent = new Intent(getContext(), AddItemActivity.class);
-                        intent.putExtra("", itemId);
-                        startActivity(intent);
-                    }
-                });
+                    holder.mEditItem.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Intent intent = new Intent(getContext(), AddItemActivity.class);
+                            intent.putExtra(getString(R.string.item_id_extra), itemId);
+                            startActivity(intent);
+                        }
+                    });
 
-                holder.mRecordSale.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        int storedProfit = sharedPreferences.getInt("KEY_STORED_PROFIT", 0);
-                        double profit = itemSellingPrice - itemCostPrice;
-                        storedProfit = storedProfit + (int) profit;
-                        sharedPreferences.edit()
-                                .putInt("KEY_STORED_PROFIT", storedProfit)
-                                .apply();
-                    }
-                });
-            }
+                    holder.mRecordSale.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            int storedProfit = sharedPreferences.getInt("KEY_STORED_PROFIT", 0);
+                            double profit = itemSellingPrice - itemCostPrice;
+                            storedProfit = storedProfit + (int) profit;
+                            sharedPreferences.edit()
+                                    .putInt("KEY_STORED_PROFIT", storedProfit)
+                                    .apply();
+                        }
+                    });
+                }
 
-            @NonNull
-            @Override
-            public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-                View view = LayoutInflater.from(parent.getContext())
-                        .inflate(R.layout.fragment_item, parent, false);
-                return new ViewHolder(view);
-            }
-        };
+                @NonNull
+                @Override
+                public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+                    View view = LayoutInflater.from(parent.getContext())
+                            .inflate(R.layout.fragment_item, parent, false);
+                    return new ViewHolder(view);
+                }
+            };
 
 
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
-        mRecyclerView.setLayoutManager(layoutManager);
-        mRecyclerView.setAdapter(mAdapter);
+            LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+            mRecyclerView.setLayoutManager(layoutManager);
+            mRecyclerView.setAdapter(mAdapter);
+        }
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
