@@ -6,7 +6,7 @@
     <string name="nav_header_title">Android Studio</string>
     <string name="nav_header_subtitle">android.studio@android.com</string>
     <string name="nav_header_desc">Navigation header</string>
-    <string name="action_settings">Settings</string>
+    <string name="action_sign_out">Sign out</string>
     <string name="edit_item_content_description">Edit Item</string>
     <string name="record_sale_content_description">Record Sale</string>
     <string name="edit_item_name_hint">Item</string>
