@@ -55,7 +55,7 @@ public class AddItemActivity extends AppCompatActivity {
                         Double.valueOf(editCostPrice.getText().toString())
                 );
                 FirebaseUser user = mFirebaseAuth.getCurrentUser();
-                String userId = null;
+                String userId;
                 if (user != null) {
                     userId = user.getUid();
                     mDatabaseReference.child(userId).child(id).setValue(item);
