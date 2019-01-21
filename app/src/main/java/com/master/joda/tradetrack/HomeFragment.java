@@ -12,12 +12,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
@@ -40,6 +43,8 @@ public class HomeFragment extends Fragment {
 
     @BindView(R.id.list)
     RecyclerView mRecyclerView;
+    @BindView(R.id.progressBar)
+    ProgressBar mProgressBar;
 
     private Unbinder unbinder;
 
@@ -68,6 +73,8 @@ public class HomeFragment extends Fragment {
         // initialise FirebaseDatabase
         mFirebaseDatabase = FirebaseDatabase.getInstance();
         mItemsDatabaseReference = mFirebaseDatabase.getReference().child("items");
+
+        mProgressBar.setVisibility(View.VISIBLE);
 
         setupRecyclerView();
 
@@ -145,6 +152,19 @@ public class HomeFragment extends Fragment {
                     View view = LayoutInflater.from(parent.getContext())
                             .inflate(R.layout.fragment_item, parent, false);
                     return new ViewHolder(view);
+                }
+
+                @Override
+                public void onDataChanged() {
+                    super.onDataChanged();
+                    mProgressBar.setVisibility(View.GONE);
+                }
+
+                @Override
+                public void onError(@NonNull DatabaseError error) {
+                    super.onError(error);
+                    mProgressBar.setVisibility(View.GONE);
+                    Toast.makeText(getContext(), getString(R.string.error_message), Toast.LENGTH_LONG).show();
                 }
             };
 
