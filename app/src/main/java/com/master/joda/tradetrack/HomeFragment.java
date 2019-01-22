@@ -37,6 +37,7 @@ public class HomeFragment extends Fragment {
 
     private FirebaseDatabase mFirebaseDatabase;
     private DatabaseReference mItemsDatabaseReference;
+    private FirebaseUser mFirebaseUser;
     private FirebaseRecyclerAdapter mAdapter;
 
     private SharedPreferences sharedPreferences;
@@ -73,6 +74,7 @@ public class HomeFragment extends Fragment {
         // initialise FirebaseDatabase
         mFirebaseDatabase = FirebaseDatabase.getInstance();
         mItemsDatabaseReference = mFirebaseDatabase.getReference().child("items");
+        mFirebaseUser = FirebaseAuth.getInstance().getCurrentUser();
 
         mProgressBar.setVisibility(View.VISIBLE);
 
@@ -100,79 +102,95 @@ public class HomeFragment extends Fragment {
     }
 
     private void setupRecyclerView() {
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if (user != null) {
-            Query query = mItemsDatabaseReference.child(user.getUid());
+        Query query = mItemsDatabaseReference.child(mFirebaseUser.getUid());
 
-            FirebaseRecyclerOptions<Item> options =
-                    new FirebaseRecyclerOptions.Builder<Item>()
-                            .setQuery(query, Item.class)
-                            .build();
+        FirebaseRecyclerOptions<Item> options =
+                new FirebaseRecyclerOptions.Builder<Item>()
+                        .setQuery(query, Item.class)
+                        .build();
 
-            mAdapter = new FirebaseRecyclerAdapter<Item, ViewHolder>(options) {
-                @Override
-                protected void onBindViewHolder(@NonNull ViewHolder holder, int position, @NonNull Item model) {
-                    holder.bind(model);
+        mAdapter = new FirebaseRecyclerAdapter<Item, ViewHolder>(options) {
+            @Override
+            protected void onBindViewHolder(@NonNull ViewHolder holder, int position, @NonNull Item model) {
+                holder.bind(model);
 
-                    final String itemId = model.getId();
-                    final String itemName = model.getName();
-                    final String itemQuantity = model.getQuantity();
-                    final double itemCostPrice = model.getCostPrice();
-                    final double itemSellingPrice = model.getSellingPrice();
+                final String itemId = model.getId();
+                final String itemName = model.getName();
+                final String itemQuantity = model.getQuantity();
+                final double itemCostPrice = model.getCostPrice();
+                final double itemSellingPrice = model.getSellingPrice();
 
-                    holder.mEditItem.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            Intent intent = new Intent(getContext(), AddItemActivity.class);
-                            intent.putExtra(getString(R.string.item_id_extra), itemId);
-                            intent.putExtra(getString(R.string.item_name_extra), itemName);
-                            intent.putExtra(getString(R.string.item_quantity_extra), itemQuantity);
-                            intent.putExtra(getString(R.string.item_cost_price_extra), itemCostPrice);
-                            intent.putExtra(getString(R.string.item_selling_price_extra), itemSellingPrice);
-                            startActivity(intent);
-                        }
-                    });
+                final int itemQuantityInt = Integer.valueOf(itemQuantity);
 
-                    holder.mRecordSale.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
+                if (itemQuantityInt <= 0) {
+                    holder.mRecordSale.setEnabled(false);
+                }
+
+                holder.mEditItem.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(getContext(), AddItemActivity.class);
+                        intent.putExtra(getString(R.string.item_id_extra), itemId);
+                        intent.putExtra(getString(R.string.item_name_extra), itemName);
+                        intent.putExtra(getString(R.string.item_quantity_extra), itemQuantity);
+                        intent.putExtra(getString(R.string.item_cost_price_extra), itemCostPrice);
+                        intent.putExtra(getString(R.string.item_selling_price_extra), itemSellingPrice);
+                        startActivity(intent);
+                    }
+                });
+
+                holder.mRecordSale.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        int itemQuantityInt = Integer.valueOf(itemQuantity);
+                        if (itemQuantityInt > 0) {
+                            itemQuantityInt--;
                             int storedProfit = sharedPreferences.getInt("KEY_STORED_PROFIT", 0);
                             double profit = itemSellingPrice - itemCostPrice;
                             storedProfit = storedProfit + (int) profit;
                             sharedPreferences.edit()
                                     .putInt("KEY_STORED_PROFIT", storedProfit)
                                     .apply();
+
+                            mItemsDatabaseReference.child(mFirebaseUser.getUid())
+                                    .child(itemId)
+                                    .child("quantity")
+                                    .setValue(itemQuantityInt);
+                        } else {
+                            Toast.makeText(getContext(), getString(R.string.zero_quantity_message), Toast.LENGTH_SHORT)
+                                    .show();
                         }
-                    });
-                }
+                    }
+                });
+            }
 
-                @NonNull
-                @Override
-                public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-                    View view = LayoutInflater.from(parent.getContext())
-                            .inflate(R.layout.fragment_item, parent, false);
-                    return new ViewHolder(view);
-                }
+            @NonNull
+            @Override
+            public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+                View view = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.fragment_item, parent, false);
+                return new ViewHolder(view);
+            }
 
-                @Override
-                public void onDataChanged() {
-                    super.onDataChanged();
-                    mProgressBar.setVisibility(View.GONE);
-                }
+            @Override
+            public void onDataChanged() {
+                super.onDataChanged();
 
-                @Override
-                public void onError(@NonNull DatabaseError error) {
-                    super.onError(error);
-                    mProgressBar.setVisibility(View.GONE);
-                    Toast.makeText(getContext(), getString(R.string.error_message), Toast.LENGTH_LONG).show();
-                }
-            };
+                mProgressBar.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onError(@NonNull DatabaseError error) {
+                super.onError(error);
+                mProgressBar.setVisibility(View.GONE);
+                Toast.makeText(getContext(), getString(R.string.error_message), Toast.LENGTH_LONG).show();
+            }
+        };
 
 
-            LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
-            mRecyclerView.setLayoutManager(layoutManager);
-            mRecyclerView.setAdapter(mAdapter);
-        }
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+        mRecyclerView.setLayoutManager(layoutManager);
+        mRecyclerView.setAdapter(mAdapter);
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
