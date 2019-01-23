@@ -19,6 +19,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.CompoundButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
@@ -28,6 +29,7 @@ import com.google.firebase.auth.FirebaseUser;
 import java.util.Arrays;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -43,6 +45,7 @@ public class MainActivity extends AppCompatActivity
 
 
     private static final int RC_SIGN_IN = 1;
+    private FirebaseUser mFirebaseUser;
     private FirebaseAuth mFirebaseAuth;
     private FirebaseAuth.AuthStateListener mAuthStateListener;
 
@@ -51,7 +54,10 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        ButterKnife.bind(this);
+
         mFirebaseAuth = FirebaseAuth.getInstance();
+        mFirebaseUser = mFirebaseAuth.getCurrentUser();
 
         setSupportActionBar(mToolbar);
 
@@ -79,6 +85,8 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
+        setNavHeaderValues();
+
         mAuthStateListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
@@ -103,6 +111,14 @@ public class MainActivity extends AppCompatActivity
                 }
             }
         };
+    }
+
+    private void setNavHeaderValues() {
+        View headerView = mNavigationView.getHeaderView(0);
+        TextView usernameTextView = headerView.findViewById(R.id.username);
+        TextView emailTextView = headerView.findViewById(R.id.user_email);
+        usernameTextView.setText(mFirebaseUser.getDisplayName());
+        emailTextView.setText(mFirebaseUser.getEmail());
     }
 
     @Override
