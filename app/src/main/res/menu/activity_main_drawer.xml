@@ -13,14 +13,14 @@
             android:id="@+id/nav_sales_record"
             android:icon="@drawable/ic_attach_money"
             android:title="@string/sales_record" />
-        <item
-            android:id="@+id/nav_enable_sound"
-            android:icon="@drawable/ic_music_note"
-            android:title="@string/enable_sound"
-            app:actionLayout="@layout/drawer_switch" />
     </group>
     <item android:title="">
         <menu>
+            <item
+                android:id="@+id/nav_enable_sound"
+                android:icon="@drawable/ic_music_note"
+                android:title="@string/enable_sound"
+                app:actionLayout="@layout/drawer_switch" />
             <item
                 android:id="@+id/nav_about"
                 android:icon="@drawable/ic_info"
