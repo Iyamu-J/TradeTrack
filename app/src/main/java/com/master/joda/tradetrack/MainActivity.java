@@ -1,7 +1,9 @@
 package com.master.joda.tradetrack;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -81,7 +83,10 @@ public class MainActivity extends AppCompatActivity
         drawerSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                // TODO:
+                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
+                preferences.edit()
+                        .putBoolean(getString(R.string.is_checked_key), isChecked)
+                        .apply();
             }
         });
 
@@ -117,8 +122,10 @@ public class MainActivity extends AppCompatActivity
         View headerView = mNavigationView.getHeaderView(0);
         TextView usernameTextView = headerView.findViewById(R.id.username);
         TextView emailTextView = headerView.findViewById(R.id.user_email);
-        usernameTextView.setText(mFirebaseUser.getDisplayName());
-        emailTextView.setText(mFirebaseUser.getEmail());
+        if (mFirebaseUser != null) {
+            usernameTextView.setText(mFirebaseUser.getDisplayName());
+            emailTextView.setText(mFirebaseUser.getEmail());
+        }
     }
 
     @Override
