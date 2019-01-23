@@ -24,5 +24,7 @@
     <string name="item_quantity_extra">ITEM_QUANTITY_EXTRA</string>
     <string name="item_cost_price_extra">ITEM_COST_PRICE_EXTRA</string>
     <string name="item_selling_price_extra">ITEM_SELLING_PRICE_EXTRA</string>
+    <string name="error_message">Unable to retrieve items</string>
     <string name="zero_quantity_message">You no longer have this item in your store</string>
+    <string name="is_checked_key">IS_CHECKED_PREFERENCE_KEY</string>
 </resources>
