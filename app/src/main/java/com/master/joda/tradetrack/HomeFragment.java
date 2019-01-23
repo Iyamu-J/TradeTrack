@@ -2,7 +2,6 @@ package com.master.joda.tradetrack;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
@@ -41,8 +40,7 @@ public class HomeFragment extends Fragment {
     private FirebaseUser mFirebaseUser;
     private FirebaseRecyclerAdapter mAdapter;
 
-    private SharedPreferences mSharedPreferences;
-    private MediaPlayer mMediaPlayer;
+    private SharedPreferences sharedPreferences;
 
     @BindView(R.id.list)
     RecyclerView mRecyclerView;
@@ -71,8 +69,7 @@ public class HomeFragment extends Fragment {
 
         unbinder = ButterKnife.bind(this, view);
 
-        mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-        mMediaPlayer = MediaPlayer.create(getContext(), R.raw.click);
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
 
         // initialise FirebaseDatabase
         mFirebaseDatabase = FirebaseDatabase.getInstance();
@@ -96,14 +93,12 @@ public class HomeFragment extends Fragment {
     public void onStop() {
         super.onStop();
         mAdapter.stopListening();
-        mMediaPlayer.release();
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
-        mMediaPlayer.release();
     }
 
     private void setupRecyclerView() {
@@ -147,26 +142,23 @@ public class HomeFragment extends Fragment {
                 holder.mRecordSale.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        boolean isChecked = mSharedPreferences.getBoolean(getString(R.string.is_checked_key), true);
-                        if (isChecked) {
-                            mMediaPlayer.start();
-                        }
                         int itemQuantityInt = Integer.valueOf(itemQuantity);
-                        if (itemQuantityInt >= 1) {
+                        if (itemQuantityInt > 0) {
                             itemQuantityInt--;
-                            int storedProfit = mSharedPreferences.getInt("KEY_STORED_PROFIT", 0);
+                            int storedProfit = sharedPreferences.getInt("KEY_STORED_PROFIT", 0);
                             double profit = itemSellingPrice - itemCostPrice;
                             storedProfit = storedProfit + (int) profit;
-                            mSharedPreferences.edit()
+                            sharedPreferences.edit()
                                     .putInt("KEY_STORED_PROFIT", storedProfit)
                                     .apply();
 
                             mItemsDatabaseReference.child(mFirebaseUser.getUid())
                                     .child(itemId)
                                     .child("quantity")
-                                    .setValue(String.valueOf(itemQuantityInt));
+                                    .setValue(itemQuantityInt);
                         } else {
-                            makeToast();
+                            Toast.makeText(getContext(), getString(R.string.zero_quantity_message), Toast.LENGTH_SHORT)
+                                    .show();
                         }
                     }
                 });
@@ -199,11 +191,6 @@ public class HomeFragment extends Fragment {
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         mRecyclerView.setLayoutManager(layoutManager);
         mRecyclerView.setAdapter(mAdapter);
-    }
-
-    private void makeToast() {
-        Toast.makeText(getContext(), getString(R.string.zero_quantity_message), Toast.LENGTH_SHORT)
-                .show();
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
