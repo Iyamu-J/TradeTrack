@@ -27,4 +27,5 @@
     <string name="error_message">Unable to retrieve items</string>
     <string name="zero_quantity_message">You no longer have this item in your store</string>
     <string name="is_checked_key">IS_CHECKED_PREFERENCE_KEY</string>
+    <string name="share_content_description">share profit</string>
 </resources>
