@@ -212,6 +212,7 @@ public class MainActivity extends AppCompatActivity
                 fragment = new HomeFragment();
                 break;
             case R.id.nav_sales_record:
+                fragment = new ViewRecordsFragment();
                 break;
             case R.id.nav_about:
                 break;
