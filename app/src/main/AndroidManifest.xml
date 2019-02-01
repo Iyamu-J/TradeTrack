@@ -21,7 +21,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".AddItemActivity"
+        <activity
+            android:name=".AddItemActivity"
             android:parentActivityName=".MainActivity"
             android:label="@string/add_item_activity_label"/>
     </application>
