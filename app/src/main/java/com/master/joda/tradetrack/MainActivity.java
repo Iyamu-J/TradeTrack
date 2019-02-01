@@ -51,6 +51,8 @@ public class MainActivity extends AppCompatActivity
     private FirebaseAuth mFirebaseAuth;
     private FirebaseAuth.AuthStateListener mAuthStateListener;
 
+    private int checkedItem = R.id.nav_home;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,7 +79,7 @@ public class MainActivity extends AppCompatActivity
         toggle.syncState();
 
         mNavigationView.setNavigationItemSelectedListener(this);
-        mNavigationView.setCheckedItem(R.id.nav_home);
+        mNavigationView.setCheckedItem(checkedItem);
 
         SwitchCompat drawerSwitch = (SwitchCompat) mNavigationView.getMenu().findItem(R.id.nav_enable_sound).getActionView();
         drawerSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -113,6 +115,7 @@ public class MainActivity extends AppCompatActivity
                     getSupportFragmentManager().beginTransaction()
                             .replace(R.id.container_frame, homeFragment)
                             .commit();
+                    checkedItem = R.id.nav_home;
                 }
             }
         };
@@ -206,23 +209,42 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void displaySelectedNavItem(int navItemId) {
-        Fragment fragment = null;
+        Fragment fragment;
+        FragmentManager fragmentManager = getSupportFragmentManager();
         switch (navItemId) {
             case R.id.nav_home:
-                fragment = new HomeFragment();
+                fragment = fragmentManager.findFragmentByTag(getString(R.string.home_fragment_tag));
+                if (fragment != null) {
+                    fragmentManager.beginTransaction()
+                            .replace(R.id.container_frame, fragment)
+                            .commit();
+                } else {
+                    fragment = new HomeFragment();
+                    fragmentManager.beginTransaction()
+                            .replace(R.id.container_frame, fragment, getString(R.string.home_fragment_tag))
+                            .commit();
+                }
+
+                checkedItem = R.id.nav_home;
+
                 break;
             case R.id.nav_sales_record:
-                fragment = new ViewRecordsFragment();
+                fragment = fragmentManager.findFragmentByTag(getString(R.string.view_records_fragment_tag));
+                if (fragment != null) {
+                    fragmentManager.beginTransaction()
+                            .replace(R.id.container_frame, fragment)
+                            .commit();
+                } else {
+                    fragment = new ViewRecordsFragment();
+                    fragmentManager.beginTransaction()
+                            .replace(R.id.container_frame, fragment, getString(R.string.view_records_fragment_tag))
+                            .commit();
+                }
+
+                checkedItem = R.id.nav_sales_record;
                 break;
             case R.id.nav_about:
                 break;
-        }
-
-        if (fragment != null) {
-            FragmentManager fragmentManager = getSupportFragmentManager();
-            fragmentManager.beginTransaction()
-                    .replace(R.id.container_frame, fragment)
-                    .commit();
         }
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
