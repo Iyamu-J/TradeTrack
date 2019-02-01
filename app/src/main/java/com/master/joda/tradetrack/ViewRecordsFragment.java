@@ -94,6 +94,7 @@ public class ViewRecordsFragment extends Fragment {
                     public void onClick(View v) {
                         Intent shareIntent = new Intent();
                         shareIntent.setAction(Intent.ACTION_SEND);
+                        shareIntent.setType("text/plain");
                         shareIntent.putExtra(Intent.EXTRA_TEXT,
                                 getString(R.string.share_profit, profit));
                         startActivity(Intent.createChooser(shareIntent, getString(R.string.intent_chooser_title)));
@@ -106,7 +107,12 @@ public class ViewRecordsFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
-                    mProgressBar.setVisibility(View.GONE);
+                    // the listener is fired in the HomeFragment unexpectedly
+                    // this is supposed to prevent the app from crashing
+                    // null reference on the mProgressBar yen yen yen
+                    if (mProgressBar != null) {
+                        mProgressBar.setVisibility(View.GONE);
+                    }
                 } else {
                     mProgressBar.setVisibility(View.GONE);
                     Toast.makeText(getContext(), getString(R.string.records_error_message), Toast.LENGTH_LONG).show();
