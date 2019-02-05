@@ -10,15 +10,17 @@
         android:id="@+id/record_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:clipToPadding="false"
+        android:paddingBottom="76dp"
+        android:scrollbarStyle="outsideOverlay"
         app:layoutManager="android.support.v7.widget.LinearLayoutManager"
-        tools:listitem="@layout/fragment_record"/>
+        tools:listitem="@layout/fragment_record" />
 
     <ProgressBar
         android:id="@+id/records_progress_bar"
         style="?android:attr/progressBarStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:paddingBottom="96dp"/>
+        android:layout_gravity="center" />
 
 </FrameLayout>

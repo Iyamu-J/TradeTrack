@@ -18,8 +18,10 @@
         android:id="@+id/list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:clipToPadding="false"
+        android:paddingBottom="76dp"
+        android:scrollbarStyle="outsideOverlay"
         app:layoutManager="android.support.v7.widget.LinearLayoutManager"
-        tools:listitem="@layout/fragment_item"
-        android:paddingBottom="96dp"/>
+        tools:listitem="@layout/fragment_item"/>
 
 </FrameLayout>
