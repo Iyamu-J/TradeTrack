@@ -5,8 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
-import android.text.Editable;
-import android.text.TextWatcher;
+import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
@@ -22,7 +21,7 @@ import java.util.UUID;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class AddItemActivity extends AppCompatActivity implements TextWatcher {
+public class AddItemActivity extends AppCompatActivity {
 
     @BindView(R.id.edit_item_name)
     EditText editItemName;
@@ -38,7 +37,14 @@ public class AddItemActivity extends AppCompatActivity implements TextWatcher {
     private FirebaseAuth mFirebaseAuth;
     private DatabaseReference mDatabaseReference;
 
-    String itemId;
+    private String mItemId;
+    private int[] mIds = new int[]{
+            R.id.edit_item_name,
+            R.id.edit_quantity,
+            R.id.edit_cost_price,
+            R.id.edit_selling_price
+    };
+    private boolean mIsEditTextEmpty;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,37 +55,36 @@ public class AddItemActivity extends AppCompatActivity implements TextWatcher {
         mFirebaseAuth = FirebaseAuth.getInstance();
         mDatabaseReference = FirebaseDatabase.getInstance().getReference().child("items");
 
-        editItemName.addTextChangedListener(this);
-        editQuantity.addTextChangedListener(this);
-        editCostPrice.addTextChangedListener(this);
-        editSellingPrice.addTextChangedListener(this);
-
         Intent intent = getIntent();
         if (intent.hasExtra(getString(R.string.item_id_extra))) {
-            itemId = intent.getStringExtra(getString(R.string.item_id_extra));
+            mItemId = intent.getStringExtra(getString(R.string.item_id_extra));
         } else {
-            itemId = generateId();
+            mItemId = generateId();
         }
         initialiseEditTexts(intent);
 
         fabAddItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Item item = new Item(
-                        itemId,
-                        editItemName.getText().toString(),
-                        editQuantity.getText().toString(),
-                        Double.valueOf(editSellingPrice.getText().toString()),
-                        Double.valueOf(editCostPrice.getText().toString())
-                );
-                FirebaseUser user = mFirebaseAuth.getCurrentUser();
-                String userId;
-                if (user != null) {
-                    userId = user.getUid();
-                    mDatabaseReference.child(userId)
-                            .child(itemId)
-                            .setValue(item);
-                    finish();
+
+                validateEditText(mIds);
+                if (!mIsEditTextEmpty) {
+                    Item item = new Item(
+                            mItemId,
+                            editItemName.getText().toString(),
+                            editQuantity.getText().toString(),
+                            Double.valueOf(editSellingPrice.getText().toString()),
+                            Double.valueOf(editCostPrice.getText().toString())
+                    );
+                    FirebaseUser user = mFirebaseAuth.getCurrentUser();
+                    String userId;
+                    if (user != null) {
+                        userId = user.getUid();
+                        mDatabaseReference.child(userId)
+                                .child(mItemId)
+                                .setValue(item);
+                        finish();
+                    }
                 }
             }
         });
@@ -101,6 +106,7 @@ public class AddItemActivity extends AppCompatActivity implements TextWatcher {
 
     /**
      * Initialises the EditTexts if an intent starts this activity
+     *
      * @param intent intent that starts the activity
      */
     private void initialiseEditTexts(Intent intent) {
@@ -134,20 +140,17 @@ public class AddItemActivity extends AppCompatActivity implements TextWatcher {
         }
     }
 
-    @Override
-    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-    }
+    private void validateEditText(int... ids) {
 
-    @Override
-    public void onTextChanged(CharSequence s, int start, int before, int count) {
-        if (s.toString().trim().length() > 0) {
-            fabAddItem.setEnabled(true);
-        } else {
-            fabAddItem.setEnabled(false);
+        for (int id : ids) {
+
+            EditText editText = findViewById(id);
+            if (TextUtils.isEmpty(editText.getText().toString())) {
+                editText.setError("Value Cannot be empty. Please enter a value");
+                mIsEditTextEmpty = true;
+            } else {
+                mIsEditTextEmpty = false;
+            }
         }
-    }
-
-    @Override
-    public void afterTextChanged(Editable s) {
     }
 }
