@@ -9,6 +9,8 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,11 +23,17 @@ import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import com.master.joda.tradetrack.model.Item;
+import com.master.joda.tradetrack.model.Record;
+
+import org.joda.time.DateTime;
+import org.joda.time.format.ISODateTimeFormat;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -34,10 +42,11 @@ import butterknife.Unbinder;
 /**
  * A fragment representing a list of Items.
  */
-public class HomeFragment extends Fragment {
+public class HomeFragment extends Fragment implements ValueEventListener {
 
     private FirebaseDatabase mFirebaseDatabase;
     private DatabaseReference mItemsDatabaseReference;
+    private DatabaseReference mRecordsDatabaseReference;
     private FirebaseUser mFirebaseUser;
     private FirebaseRecyclerAdapter mAdapter;
 
@@ -50,18 +59,13 @@ public class HomeFragment extends Fragment {
     ProgressBar mProgressBar;
 
     private Unbinder unbinder;
+    private boolean isDatePresent;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
      */
     public HomeFragment() {
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
     }
 
     @Override
@@ -76,8 +80,9 @@ public class HomeFragment extends Fragment {
 
         // initialise FirebaseDatabase
         mFirebaseDatabase = FirebaseDatabase.getInstance();
-        mItemsDatabaseReference = mFirebaseDatabase.getReference().child("items");
         mFirebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        mItemsDatabaseReference = mFirebaseDatabase.getReference().child("items");
+        mRecordsDatabaseReference = mFirebaseDatabase.getReference().child("records").child(mFirebaseUser.getUid());
 
         mProgressBar.setVisibility(View.VISIBLE);
 
@@ -93,8 +98,8 @@ public class HomeFragment extends Fragment {
     }
 
     @Override
-    public void onStop() {
-        super.onStop();
+    public void onDestroy() {
+        super.onDestroy();
         mAdapter.stopListening();
         mMediaPlayer.release();
     }
@@ -144,27 +149,34 @@ public class HomeFragment extends Fragment {
                     }
                 });
 
+                isNewDay();
                 holder.mRecordSale.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        boolean isChecked = mSharedPreferences.getBoolean(getString(R.string.is_checked_key), true);
-                        if (isChecked) {
-                            mMediaPlayer.start();
-                        }
+
                         int itemQuantityInt = Integer.valueOf(itemQuantity);
                         if (itemQuantityInt >= 1) {
                             itemQuantityInt--;
-                            int storedProfit = mSharedPreferences.getInt("KEY_STORED_PROFIT", 0);
-                            double profit = itemSellingPrice - itemCostPrice;
-                            storedProfit = storedProfit + (int) profit;
-                            mSharedPreferences.edit()
-                                    .putInt("KEY_STORED_PROFIT", storedProfit)
-                                    .apply();
 
-                            mItemsDatabaseReference.child(mFirebaseUser.getUid())
-                                    .child(itemId)
-                                    .child("quantity")
-                                    .setValue(String.valueOf(itemQuantityInt));
+                            boolean isChecked = mSharedPreferences
+                                    .getBoolean(getString(R.string.is_checked_key), true);
+                            if (isChecked) {
+                                mMediaPlayer.start();
+                            }
+
+                            // Update Quantity
+                            updateQuantity(itemQuantityInt, itemId);
+
+                            // get new profit
+                            final double profit = itemSellingPrice - itemCostPrice;
+
+                            if (isDatePresent) {
+                                updateProfit(profit);
+                                Log.d(HomeFragment.class.getSimpleName(), "Record updated");
+                            } else {
+                                createNewRecordInstance(profit);
+                                Log.d(HomeFragment.class.getSimpleName(), "New Record created");
+                            }
                         } else {
                             makeToast();
                         }
@@ -195,15 +207,101 @@ public class HomeFragment extends Fragment {
             }
         };
 
-
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         mRecyclerView.setLayoutManager(layoutManager);
         mRecyclerView.setAdapter(mAdapter);
     }
 
+    private void updateProfit(double profit) {
+        // get saved profit
+        int storedProfit = mSharedPreferences.getInt(getString(R.string.key_stored_profit), 0);
+
+        // get saved push key
+        String savedKey = mSharedPreferences.getString(getString(R.string.key_saved_push_key), "");
+
+        // add new profit to previous profit
+        storedProfit = (int) (storedProfit + profit);
+
+        assert savedKey != null;
+        mRecordsDatabaseReference.child(savedKey).child("profit").setValue(String.valueOf(storedProfit));
+
+        // temporarily store profit till new day
+        mSharedPreferences.edit()
+                .putInt(getString(R.string.key_stored_profit), storedProfit)
+                .apply();
+    }
+
+    private void createNewRecordInstance(double profit) {
+        // remove previous profit
+        mSharedPreferences.edit()
+                .remove(getString(R.string.key_stored_profit))
+                .apply();
+
+        // get push key
+        String key = mRecordsDatabaseReference.push().getKey();
+
+        // create new Date instance
+        String dateString = ISODateTimeFormat.date().print(new DateTime());
+
+//        String key = mSharedPreferences.getString(getString(R.string.key_saved_push_key), "");
+
+        // create new instance of Record
+        Record record = new Record();
+        record.setProfit(String.valueOf(profit));
+        record.setDate(dateString);
+
+        // upload to database
+        assert key != null;
+        mRecordsDatabaseReference.child(key).setValue(record);
+
+        // store new profit
+        mSharedPreferences.edit()
+                .putInt(getString(R.string.key_stored_profit), (int) profit)
+                .apply();
+
+        // store new push key
+        mSharedPreferences.edit()
+                .putString(getString(R.string.key_saved_push_key), key)
+                .apply();
+
+    }
+
+    private void updateQuantity(int itemQuantityInt, String itemId) {
+        mItemsDatabaseReference.child(mFirebaseUser.getUid())
+                .child(itemId)
+                .child("quantity")
+                .setValue(String.valueOf(itemQuantityInt));
+    }
+
     private void makeToast() {
         Toast.makeText(getContext(), getString(R.string.zero_quantity_message), Toast.LENGTH_SHORT)
                 .show();
+    }
+
+    private void isNewDay() {
+
+        String key = mSharedPreferences.getString(getString(R.string.key_saved_push_key), "");
+        if (TextUtils.isEmpty(key)) {
+            isDatePresent = false;
+        } else {
+            assert key != null;
+            mRecordsDatabaseReference.child(key).child("date")
+                    .addListenerForSingleValueEvent(this);
+        }
+    }
+
+    @Override
+    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+        String dateString = ISODateTimeFormat.date().print(new DateTime());
+        Log.d(HomeFragment.class.getSimpleName(), "DataSnapshot: " + dataSnapshot.toString());
+        isDatePresent = dateString.equals(dataSnapshot.getValue());
+        Log.d(HomeFragment.class.getSimpleName(), "Is Date present? " + isDatePresent);
+        Log.d(HomeFragment.class.getSimpleName(), "Date: " + dateString);
+    }
+
+    @Override
+    public void onCancelled(@NonNull DatabaseError databaseError) {
+
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
