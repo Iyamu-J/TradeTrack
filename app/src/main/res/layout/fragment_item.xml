@@ -25,9 +25,30 @@
             android:textAppearance="@style/TextAppearance.AppCompat.Headline"
             tools:text="Item" />
 
+        <TextView
+            android:id="@+id/item_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            android:textColor="@color/secondary_text"
+            tools:text="Price: 40" />
+
+        <TextView
+            android:id="@+id/item_quantity"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            android:textColor="@color/secondary_text"
+            tools:text="Quantity: 6 Units"/>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginTop="8dp"
             android:gravity="end"
             android:orientation="horizontal">
 
