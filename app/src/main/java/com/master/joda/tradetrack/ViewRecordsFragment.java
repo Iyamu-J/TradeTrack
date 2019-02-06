@@ -64,6 +64,8 @@ public class ViewRecordsFragment extends Fragment {
 
         setupRecyclerView();
 
+        mProgressBar.setVisibility(View.VISIBLE);
+
         return view;
     }
 
@@ -101,32 +103,22 @@ public class ViewRecordsFragment extends Fragment {
                     }
                 });
             }
-        };
-
-        query.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if (dataSnapshot.exists()) {
-                    // the listener is fired in the HomeFragment unexpectedly
-                    // this is supposed to prevent the app from crashing
-                    // null reference on the mProgressBar yen yen yen
-                    if (mProgressBar != null) {
-                        mProgressBar.setVisibility(View.GONE);
-                    }
-                } else {
-                    mProgressBar.setVisibility(View.GONE);
-                    Toast.makeText(getContext(), getString(R.string.records_error_message), Toast.LENGTH_LONG).show();
-                }
-            }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
+            public void onDataChanged() {
+                super.onDataChanged();
+
                 mProgressBar.setVisibility(View.GONE);
-                Log.d(ViewRecordsFragment.class.getSimpleName(), databaseError.getMessage());
-                Toast.makeText(getContext(), getString(R.string.records_error_message), Toast.LENGTH_LONG).show();
-                // TODO: Consider using a SnackBar
             }
-        });
+
+            @Override
+            public void onError(@NonNull DatabaseError error) {
+                super.onError(error);
+
+                mProgressBar.setVisibility(View.GONE);
+                Toast.makeText(getContext(), getString(R.string.records_error_message), Toast.LENGTH_LONG).show();
+            }
+        };
 
         mRecyclerView.setAdapter(mAdapter);
     }
