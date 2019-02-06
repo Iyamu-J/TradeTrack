@@ -23,6 +23,7 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+            android:textSize="20sp"
             tools:text="Item" />
 
         <TextView
