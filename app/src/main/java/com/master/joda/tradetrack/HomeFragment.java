@@ -307,6 +307,10 @@ public class HomeFragment extends Fragment implements ValueEventListener {
     class ViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.item_name)
         TextView mItemName;
+        @BindView(R.id.item_price)
+        TextView mItemPrice;
+        @BindView(R.id.item_quantity)
+        TextView mItemQuantity;
         @BindView(R.id.edit_item)
         ImageButton mEditItem;
         @BindView(R.id.record_sale)
@@ -319,6 +323,8 @@ public class HomeFragment extends Fragment implements ValueEventListener {
 
         void bind(Item item) {
             mItemName.setText(item.getName());
+            mItemPrice.setText(getString(R.string.item_price_text, item.getSellingPrice()));
+            mItemQuantity.setText(getString(R.string.item_quantity_text, item.getQuantity()));
         }
     }
 }
