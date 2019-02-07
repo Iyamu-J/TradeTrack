@@ -33,7 +33,7 @@ import com.master.joda.tradetrack.model.Item;
 import com.master.joda.tradetrack.model.Record;
 
 import org.joda.time.DateTime;
-import org.joda.time.format.ISODateTimeFormat;
+import org.joda.time.format.DateTimeFormat;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -235,7 +235,7 @@ public class HomeFragment extends Fragment implements ValueEventListener {
         String key = mRecordsDatabaseReference.push().getKey();
 
         // create new Date instance
-        String dateString = ISODateTimeFormat.date().print(new DateTime());
+        String dateString = new DateTime().toString(DateTimeFormat.fullDate());
 
         // create new instance of Record
         Record record = new Record();
@@ -284,7 +284,7 @@ public class HomeFragment extends Fragment implements ValueEventListener {
 
     @Override
     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-        String dateString = ISODateTimeFormat.date().print(new DateTime());
+        String dateString = new DateTime().toString(DateTimeFormat.fullDate());
         Log.d(HomeFragment.class.getSimpleName(), "DataSnapshot: " + dataSnapshot.toString());
         isDatePresent = dateString.equals(dataSnapshot.getValue());
         Log.d(HomeFragment.class.getSimpleName(), "Is Date present? " + isDatePresent);
