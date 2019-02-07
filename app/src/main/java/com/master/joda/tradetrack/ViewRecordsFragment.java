@@ -157,7 +157,7 @@ public class ViewRecordsFragment extends Fragment {
 
         void bind(Record record) {
             mSalesDate.setText(record.getDate());
-            mSalesProfit.setText(record.getProfit());
+            mSalesProfit.setText(getString(R.string.profit_text, record.getProfit()));
         }
     }
 }
