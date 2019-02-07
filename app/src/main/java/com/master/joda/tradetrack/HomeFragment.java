@@ -130,12 +130,6 @@ public class HomeFragment extends Fragment implements ValueEventListener {
                 final double itemCostPrice = model.getCostPrice();
                 final double itemSellingPrice = model.getSellingPrice();
 
-                final int itemQuantityInt = Integer.valueOf(itemQuantity);
-
-                if (itemQuantityInt <= 0) {
-                    holder.mRecordSale.setEnabled(false);
-                }
-
                 holder.mEditItem.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -242,8 +236,6 @@ public class HomeFragment extends Fragment implements ValueEventListener {
 
         // create new Date instance
         String dateString = ISODateTimeFormat.date().print(new DateTime());
-
-//        String key = mSharedPreferences.getString(getString(R.string.key_saved_push_key), "");
 
         // create new instance of Record
         Record record = new Record();
