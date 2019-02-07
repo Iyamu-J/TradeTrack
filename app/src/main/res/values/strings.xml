@@ -18,22 +18,22 @@
     <string name="about">About</string>
     <string name="sign_in_message">Welcome %s</string>
     <string name="sign_in_cancelled_message">Sign in cancelled</string>
-    <string name="item_id_extra">ITEM_ID_EXTRA</string>
-    <string name="item_name_extra">ITEM_NAME_EXTRA</string>
-    <string name="item_quantity_extra">ITEM_QUANTITY_EXTRA</string>
-    <string name="item_cost_price_extra">ITEM_COST_PRICE_EXTRA</string>
-    <string name="item_selling_price_extra">ITEM_SELLING_PRICE_EXTRA</string>
+    <string name="item_id_extra" translatable="false">ITEM_ID_EXTRA</string>
+    <string name="item_name_extra" translatable="false">ITEM_NAME_EXTRA</string>
+    <string name="item_quantity_extra" translatable="false">ITEM_QUANTITY_EXTRA</string>
+    <string name="item_cost_price_extra" translatable="false">ITEM_COST_PRICE_EXTRA</string>
+    <string name="item_selling_price_extra" translatable="false">ITEM_SELLING_PRICE_EXTRA</string>
     <string name="error_message">Unable to retrieve items</string>
     <string name="records_error_message">Unable to retrieve records</string>
     <string name="zero_quantity_message">You no longer have this item in your store</string>
-    <string name="is_checked_key">IS_CHECKED_PREFERENCE_KEY</string>
+    <string name="is_checked_key" translatable="false">IS_CHECKED_PREFERENCE_KEY</string>
     <string name="share_content_description">share profit</string>
     <string name="share_profit">I made %s! as profit today</string>
     <string name="intent_chooser_title">Share with</string>
-    <string name="key_stored_profit">KEY_STORED_PROFIT</string>
-    <string name="key_saved_push_key">KEY_SAVED_PUSH_KEY</string>
-    <string name="home_fragment_tag">HOME_FRAGMENT_TAG</string>
-    <string name="view_records_fragment_tag">VIEW_RECORDS_FRAGMENT_TAG</string>
-    <string name="item_price_text">Price: %s</string>
-    <string name="item_quantity_text">Quantity: %s Units</string>
+    <string name="key_stored_profit" translatable="false">KEY_STORED_PROFIT</string>
+    <string name="key_saved_push_key" translatable="false">KEY_SAVED_PUSH_KEY</string>
+    <string name="home_fragment_tag" translatable="false">HOME_FRAGMENT_TAG</string>
+    <string name="view_records_fragment_tag" translatable="false">VIEW_RECORDS_FRAGMENT_TAG</string>
+    <string name="item_price_text">Price: %.2f</string>
+    <string name="item_quantity_text">Quantity: %s Unit(s)</string>
 </resources>
