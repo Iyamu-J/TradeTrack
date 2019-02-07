@@ -3,6 +3,9 @@ package com.master.joda.tradetrack;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.StrictMode;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -10,7 +13,6 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -45,13 +47,10 @@ public class MainActivity extends AppCompatActivity
     @BindView(R.id.nav_view)
     NavigationView mNavigationView;
 
-
     private static final int RC_SIGN_IN = 1;
     private FirebaseUser mFirebaseUser;
     private FirebaseAuth mFirebaseAuth;
     private FirebaseAuth.AuthStateListener mAuthStateListener;
-
-    private int checkedItem = R.id.nav_home;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +63,8 @@ public class MainActivity extends AppCompatActivity
         mFirebaseUser = mFirebaseAuth.getCurrentUser();
 
         setSupportActionBar(mToolbar);
+
+        enableStrictMode();
 
         mFloatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -79,9 +80,9 @@ public class MainActivity extends AppCompatActivity
         toggle.syncState();
 
         mNavigationView.setNavigationItemSelectedListener(this);
-        mNavigationView.setCheckedItem(checkedItem);
 
         SwitchCompat drawerSwitch = (SwitchCompat) mNavigationView.getMenu().findItem(R.id.nav_enable_sound).getActionView();
+        drawerSwitch.setEnabled(true);
         drawerSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -93,6 +94,7 @@ public class MainActivity extends AppCompatActivity
         });
 
         setNavHeaderValues();
+        openDrawer();
 
         mAuthStateListener = new FirebaseAuth.AuthStateListener() {
             @Override
@@ -111,14 +113,20 @@ public class MainActivity extends AppCompatActivity
                             RC_SIGN_IN
                     );
                 } else {
-                    HomeFragment homeFragment = new HomeFragment();
-                    getSupportFragmentManager().beginTransaction()
-                            .replace(R.id.container_frame, homeFragment)
-                            .commit();
-                    checkedItem = R.id.nav_home;
+                    displayHomeFragment();
                 }
             }
         };
+    }
+
+    private void enableStrictMode() {
+        if (BuildConfig.DEBUG) {
+            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder()
+                    .detectAll()
+                    .penaltyLog()
+                    .build();
+            StrictMode.setThreadPolicy(policy);
+        }
     }
 
     private void setNavHeaderValues() {
@@ -200,6 +208,17 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
+    private void openDrawer() {
+        Handler handler = new Handler(Looper.getMainLooper());
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                DrawerLayout drawer = findViewById(R.id.drawer_layout);
+                drawer.openDrawer(GravityCompat.START);
+            }
+        }, 1000);
+    }
+
     private void signInMessage(FirebaseUser user) {
         String displayName = user.getDisplayName();
         Snackbar.make(findViewById(R.id.coordinator_layout),
@@ -208,40 +227,19 @@ public class MainActivity extends AppCompatActivity
                 .show();
     }
 
+    private void selectNavigationMenuItem(int id) {
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        Menu menu = navigationView.getMenu();
+        menu.findItem(id).setChecked(true);
+    }
+
     private void displaySelectedNavItem(int navItemId) {
-        Fragment fragment;
-        FragmentManager fragmentManager = getSupportFragmentManager();
         switch (navItemId) {
             case R.id.nav_home:
-                fragment = fragmentManager.findFragmentByTag(getString(R.string.home_fragment_tag));
-                if (fragment != null) {
-                    fragmentManager.beginTransaction()
-                            .replace(R.id.container_frame, fragment)
-                            .commit();
-                } else {
-                    fragment = new HomeFragment();
-                    fragmentManager.beginTransaction()
-                            .replace(R.id.container_frame, fragment, getString(R.string.home_fragment_tag))
-                            .commit();
-                }
-
-                checkedItem = R.id.nav_home;
-
+                displayHomeFragment();
                 break;
             case R.id.nav_sales_record:
-                fragment = fragmentManager.findFragmentByTag(getString(R.string.view_records_fragment_tag));
-                if (fragment != null) {
-                    fragmentManager.beginTransaction()
-                            .replace(R.id.container_frame, fragment)
-                            .commit();
-                } else {
-                    fragment = new ViewRecordsFragment();
-                    fragmentManager.beginTransaction()
-                            .replace(R.id.container_frame, fragment, getString(R.string.view_records_fragment_tag))
-                            .commit();
-                }
-
-                checkedItem = R.id.nav_sales_record;
+                displayViewRecordsFragment();
                 break;
             case R.id.nav_about:
                 break;
@@ -249,5 +247,36 @@ public class MainActivity extends AppCompatActivity
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
+    }
+
+    private void displayViewRecordsFragment() {
+        Fragment fragment = getSupportFragmentManager().findFragmentByTag(getString(R.string.view_records_fragment_tag));
+        if (fragment != null) {
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.container_frame, fragment)
+                    .commit();
+        } else {
+            fragment = new ViewRecordsFragment();
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.container_frame, fragment, getString(R.string.view_records_fragment_tag))
+                    .commit();
+        }
+
+        selectNavigationMenuItem(R.id.nav_sales_record);
+    }
+
+    private void displayHomeFragment() {
+        Fragment fragment = getSupportFragmentManager().findFragmentByTag(getString(R.string.home_fragment_tag));
+        if (fragment != null) {
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.container_frame, fragment)
+                    .commit();
+        } else {
+            fragment = new HomeFragment();
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.container_frame, fragment, getString(R.string.home_fragment_tag))
+                    .commit();
+        }
+        selectNavigationMenuItem(R.id.nav_home);
     }
 }
