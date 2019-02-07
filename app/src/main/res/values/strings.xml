@@ -36,4 +36,5 @@
     <string name="view_records_fragment_tag" translatable="false">VIEW_RECORDS_FRAGMENT_TAG</string>
     <string name="item_price_text">Price: %.2f</string>
     <string name="item_quantity_text">Quantity: %s Unit(s)</string>
+    <string name="profit_text">Profit: %s</string>
 </resources>
