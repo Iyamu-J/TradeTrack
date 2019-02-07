@@ -98,11 +98,12 @@
         android:layout_marginEnd="@dimen/fab_margin"
         android:layout_marginBottom="@dimen/fab_margin"
         android:clickable="true"
-        android:elevation="4dp"
+        android:elevation="@dimen/fab_elevation"
         android:focusable="true"
-        android:translationZ="12dp"
+        android:translationZ="@dimen/fab_translation_z"
         app:fabSize="normal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@drawable/ic_check" />
+
 </android.support.constraint.ConstraintLayout>
