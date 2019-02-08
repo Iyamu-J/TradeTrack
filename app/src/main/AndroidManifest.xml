@@ -11,7 +11,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        tools:ignore="GoogleAppIndexingWarning">
+        tools:ignore="GoogleAppIndexingWarning"
+        android:fullBackupContent="false">
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
@@ -24,8 +25,12 @@
         </activity>
         <activity
             android:name=".AddItemActivity"
-            android:parentActivityName=".MainActivity"
-            android:label="@string/add_item_activity_label"/>
+            android:label="@string/add_item_activity_label"
+            android:parentActivityName=".MainActivity" />
+        <!-- Sample AdMob App ID: ca-app-pub-3940256099942544~3347511713 -->
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="@string/admob_app_id" />
     </application>
 
 </manifest>

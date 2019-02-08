@@ -10,6 +10,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.InterstitialAd;
+import com.google.android.gms.ads.MobileAds;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
@@ -36,6 +40,7 @@ public class AddItemActivity extends AppCompatActivity {
 
     private FirebaseAuth mFirebaseAuth;
     private DatabaseReference mDatabaseReference;
+    private InterstitialAd mInterstitialAd;
 
     private String mItemId;
     private final int[] mIds = new int[]{
@@ -83,11 +88,16 @@ public class AddItemActivity extends AppCompatActivity {
                         mDatabaseReference.child(userId)
                                 .child(mItemId)
                                 .setValue(item);
-                        finish();
+                        showInterstitialAd();
+//                        finish();
                     }
                 }
             }
         });
+
+        MobileAds.initialize(this,
+                getString(R.string.admob_app_id));
+        initInterstitialAd();
     }
 
     @Override
@@ -97,6 +107,11 @@ public class AddItemActivity extends AppCompatActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        showInterstitialAd();
     }
 
     @NonNull
@@ -151,6 +166,35 @@ public class AddItemActivity extends AppCompatActivity {
             } else {
                 mIsEditTextEmpty = false;
             }
+        }
+    }
+
+    private void initInterstitialAd() {
+        mInterstitialAd = new InterstitialAd(this);
+        mInterstitialAd.setAdUnitId(getString(R.string.interstitial_ad_unit_id));
+        mInterstitialAd.setAdListener(new AdListener() {
+            @Override
+            public void onAdClosed() {
+                finish();
+            }
+        });
+    }
+
+    private void loadInterstitial() {
+        if (!mInterstitialAd.isLoading() && !mInterstitialAd.isLoaded()) {
+            AdRequest adRequest = new AdRequest.Builder()
+                    .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
+                    .addTestDevice("18110811144C3B76421A1668CF660726")
+                    .build();
+            mInterstitialAd.loadAd(adRequest);
+        }
+    }
+
+    private void showInterstitialAd() {
+        if (mInterstitialAd != null && mInterstitialAd.isLoaded()) {
+            mInterstitialAd.show();
+        } else {
+            loadInterstitial();
         }
     }
 }
