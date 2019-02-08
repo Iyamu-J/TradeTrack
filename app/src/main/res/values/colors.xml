@@ -9,4 +9,5 @@
     <color name="cyan_300">#4DD0E1</color>
     <color name="cyan_500">#00ACC1</color>
     <color name="cyan_800">#00838F</color>
+    <color name="white">#FFFFFF</color>
 </resources>

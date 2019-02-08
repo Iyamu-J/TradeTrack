@@ -112,7 +112,7 @@ public class HomeFragment extends Fragment implements ValueEventListener {
     }
 
     private void setupRecyclerView() {
-        Query query = mItemsDatabaseReference.child(mFirebaseUser.getUid());
+        Query query = mItemsDatabaseReference.child(mFirebaseUser.getUid()).orderByChild("name");
 
         FirebaseRecyclerOptions<Item> options =
                 new FirebaseRecyclerOptions.Builder<Item>()
