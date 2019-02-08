@@ -38,7 +38,7 @@ public class AddItemActivity extends AppCompatActivity {
     private DatabaseReference mDatabaseReference;
 
     private String mItemId;
-    private int[] mIds = new int[]{
+    private final int[] mIds = new int[]{
             R.id.edit_item_name,
             R.id.edit_quantity,
             R.id.edit_cost_price,
