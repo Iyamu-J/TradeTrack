@@ -9,6 +9,7 @@
     <dimen name="card_elevation">2dp</dimen>
     <dimen name="fab_elevation">6dp</dimen>
     <dimen name="fab_translation_z">12dp</dimen>
+    <dimen name="main_activity_no_internet_image_view_size">150dp</dimen>
 
     <!--
 Refer to App Widget Documentation for margin information

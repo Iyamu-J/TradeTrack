@@ -2,6 +2,8 @@ package com.master.joda.tradetrack;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -32,6 +34,7 @@ import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.master.joda.tradetrack.widget.WidgetService;
 
 import java.util.Arrays;
 
@@ -117,7 +120,8 @@ public class MainActivity extends AppCompatActivity
                     startActivityForResult(
                             AuthUI.getInstance()
                                     .createSignInIntentBuilder()
-                                    .setIsSmartLockEnabled(!BuildConfig.DEBUG, true)
+                                    .setTheme(R.style.AppTheme_FirebaseUI)
+                                    .setIsSmartLockEnabled(false)
                                     .setAvailableProviders(Arrays.asList(
                                             new AuthUI.IdpConfig.EmailBuilder().build(),
                                             new AuthUI.IdpConfig.GoogleBuilder().build()
@@ -130,6 +134,15 @@ public class MainActivity extends AppCompatActivity
                 }
             }
         };
+    }
+
+    private boolean isConnected() {
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = null;
+        if (connectivityManager != null) {
+            networkInfo = connectivityManager.getActiveNetworkInfo();
+        }
+        return networkInfo != null && networkInfo.isConnectedOrConnecting();
     }
 
     private void enableStrictMode() {
@@ -190,8 +203,14 @@ public class MainActivity extends AppCompatActivity
                     signInMessage(user);
                 }
             } else if (resultCode == RESULT_CANCELED) {
-                Toast.makeText(this, getString(R.string.sign_in_cancelled_message), Toast.LENGTH_SHORT).show();
-                finish();
+//                Toast.makeText(this, getString(R.string.sign_in_cancelled_message), Toast.LENGTH_SHORT).show();
+//                finish();
+                if (!isConnected()) {
+                    setContentView(R.layout.activity_main_no_internet);
+                } else {
+                    Toast.makeText(this, getString(R.string.sign_in_cancelled_message), Toast.LENGTH_SHORT).show();
+
+                }
             }
         }
     }

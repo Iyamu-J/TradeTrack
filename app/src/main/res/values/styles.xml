@@ -19,4 +19,15 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
+    <style name="AppTheme.FirebaseUI" parent="FirebaseUI">
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorPrimaryDark">@color/primary_dark</item>
+        <item name="colorAccent">@color/accent</item>
+        <item name="colorControlNormal">@color/cyan_500</item>
+        <item name="colorControlActivated">@color/light_blue_a700</item>/
+        <item name="colorControlHighlight">@color/cyan_a200</item>
+        <item name="android:windowBackground">@color/light_blue_50</item>
+        <item name="colorButtonNormal">@color/deep_purple_500</item>
+    </style>
+
 </resources>

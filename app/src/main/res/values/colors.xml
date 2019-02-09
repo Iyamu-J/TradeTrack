@@ -6,8 +6,14 @@
     <color name="accent">#7C4DFF</color>
     <color name="primary_text">#212121</color>
     <color name="secondary_text">#757575</color>
+    <color name="cyan_a700">#00B8D4</color>
     <color name="cyan_300">#4DD0E1</color>
     <color name="cyan_500">#00ACC1</color>
     <color name="cyan_800">#00838F</color>
     <color name="white">#FFFFFF</color>
+    <color name="cyan_200">#80DEEA</color>
+    <color name="cyan_a200">#18FFFF</color>
+    <color name="deep_purple_500">#673AB7</color>
+    <color name="light_blue_50">#E1F5FE</color>
+    <color name="light_blue_a700">#0091EA</color>
 </resources>
