@@ -131,6 +131,7 @@ public class MainActivity extends AppCompatActivity
                     );
                 } else {
                     displayHomeFragment();
+                    WidgetService.startActionUpdateWidget(MainActivity.this);
                 }
             }
         };
