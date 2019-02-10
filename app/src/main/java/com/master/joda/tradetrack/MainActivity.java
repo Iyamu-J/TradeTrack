@@ -110,7 +110,7 @@ public class MainActivity extends AppCompatActivity
         });
 
         setNavHeaderValues();
-        openDrawer();
+//        openDrawer();
 
         mAuthStateListener = new FirebaseAuth.AuthStateListener() {
             @Override
