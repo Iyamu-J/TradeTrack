@@ -16,9 +16,9 @@ the profit made daily.
 <img src="screenshots/Screenshot02_reg.png" vspace="5" align="left" width=273 />
 <img src="screenshots/Screenshot03_add_item.png" vspace="5" width=273 />
 <img src="screenshots/Screenshot04_home.png" vspace="5" align="left" width=273 />
-<img src="screenshots/Screenshot05_view_records.png" vspace="5" align="right" width=273 />
+<img src="screenshots/Screenshot05_view_records.png" vspace="5" width=273 />
 
-
+<br>
 
 ### Prerequisites
 * JavaSE 7
