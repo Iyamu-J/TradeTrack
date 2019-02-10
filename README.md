@@ -28,11 +28,11 @@ git clone https://github.com/Iyamu-J/TradeTrack.git
 * Once you are done and all is fully set, you can run the app.
 
 ## Libraries
-[ButterKnife](http://jakewharton.github.io/butterknife/)
-[joda-time](https://github.com/JodaOrg/joda-time)
-[Firebase Crashlytics](https://firebase.google.com/docs/crashlytics/)
-[Firebase Database](https://firebase.google.com/docs/database/)
-[Firebase Auth](https://firebase.google.com/docs/auth/)
-[Firebase Ads](https://firebase.google.com/docs/admob/)
-[FirebaseUI Auth](https://github.com/firebase/FirebaseUI-Android/tree/master/auth)
-[FirebaseUI Database](https://github.com/firebase/FirebaseUI-Android/tree/master/database)
+*  [ButterKnife](http://jakewharton.github.io/butterknife/)
+*  [joda-time](https://github.com/JodaOrg/joda-time)
+*  [Firebase Crashlytics](https://firebase.google.com/docs/crashlytics/)
+*  [Firebase Database](https://firebase.google.com/docs/database/)
+*  [Firebase Auth](https://firebase.google.com/docs/auth/)
+*  [Firebase Ads](https://firebase.google.com/docs/admob/)
+*  [FirebaseUI Auth](https://github.com/firebase/FirebaseUI-Android/tree/master/auth)
+*  [FirebaseUI Database](https://github.com/firebase/FirebaseUI-Android/tree/master/database)
