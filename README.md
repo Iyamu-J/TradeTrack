@@ -12,12 +12,13 @@ the profit made daily.
 * Uses an IntentService to update widget.
 
 ## Screenshots
-<img src="screenshots/Screenshot01_start.png" width=273 />
-<img src="screenshots/Screenshot02_reg.png" width=273 />
-<img src="screenshots/Screenshot03_add_item.png" width=273 />
-<img src="screenshots/Screenshot04_home.png" width=273 />
-<img src="screenshots/Screenshot05_view_records.png" width=273 />
-<img src="screenshots/Screenshot06_widget.png" width=273 />
+<img src="screenshots/Screenshot01_start.png" vspace="5" align="left" width=273 />
+<img src="screenshots/Screenshot02_reg.png" vspace="5" align="left" width=273 />
+<img src="screenshots/Screenshot03_add_item.png" vspace="5" width=273 />
+<img src="screenshots/Screenshot04_home.png" vspace="5" align="left" width=273 />
+<img src="screenshots/Screenshot05_view_records.png" vspace="5" align="right" width=273 />
+
+
 
 ### Prerequisites
 * JavaSE 7
