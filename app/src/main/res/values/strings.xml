@@ -42,4 +42,6 @@
     <string name="interstitial_ad_unit_id">ca-app-pub-3940256099942544/1033173712</string>
     <string name="add_widget">Add widget</string>
     <string name="no_connection_message">No internet connection. \nPlease connect to the internet and try again</string>
+    <string name="app_widget_initial_text">You have no records yet.
+        \nOpen the app and make a sell to see your profit for today</string>
 </resources>

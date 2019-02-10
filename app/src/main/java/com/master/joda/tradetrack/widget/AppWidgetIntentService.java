@@ -22,15 +22,15 @@ import com.master.joda.tradetrack.model.Record;
  * An {@link IntentService} subclass for handling asynchronous task requests in
  * a service on a separate handler thread.
  */
-public class WidgetService extends IntentService {
+public class AppWidgetIntentService extends IntentService {
 
     private static final String ACTION_APPWIDGET_UPDATE = "com.master.joda.tradetrack.widget.action.APPWIDGET_UPDATE";
 
     private String mDate;
     private String mProfit;
 
-    public WidgetService() {
-        super("WidgetService");
+    public AppWidgetIntentService() {
+        super("AppWidgetIntentService");
     }
 
     /**
@@ -40,7 +40,7 @@ public class WidgetService extends IntentService {
      * @see IntentService
      */
     public static void startActionUpdateWidget(Context context) {
-        Intent intent = new Intent(context, WidgetService.class);
+        Intent intent = new Intent(context, AppWidgetIntentService.class);
         intent.setAction(ACTION_APPWIDGET_UPDATE);
         context.startService(intent);
     }
@@ -63,8 +63,8 @@ public class WidgetService extends IntentService {
                         mDate = record.getDate();
                         mProfit = record.getProfit();
                         handleActionUpdateWidget();
-                        Log.i(WidgetService.class.getSimpleName(), record.toString());
-                        Log.i(WidgetService.class.getSimpleName(), "Record created. Date: " + mDate + ". Profit: " + mProfit);
+                        Log.i(AppWidgetIntentService.class.getSimpleName(), record.toString());
+                        Log.i(AppWidgetIntentService.class.getSimpleName(), "Record created. Date: " + mDate + ". Profit: " + mProfit);
                     }
                 }
 
@@ -93,13 +93,13 @@ public class WidgetService extends IntentService {
      */
     private void handleActionUpdateWidget() {
 
-        Log.i(WidgetService.class.getSimpleName(), "Widget set method called. Date: " + mDate + ". Profit: " + mProfit);
+        Log.i(AppWidgetIntentService.class.getSimpleName(), "Widget set method called. Date: " + mDate + ". Profit: " + mProfit);
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this);
         int[] ids = appWidgetManager.getAppWidgetIds(new ComponentName(this, AppWidget.class));
 
         if (mDate != null && mProfit != null) {
             AppWidget.updateAllAppWidgets(this, appWidgetManager, ids, mDate, mProfit);
-            Log.i(WidgetService.class.getSimpleName(), "Widget set. Date: " + mDate + ". Profit: " + mProfit);
+            Log.i(AppWidgetIntentService.class.getSimpleName(), "Widget set. Date: " + mDate + ". Profit: " + mProfit);
         }
     }
 }

@@ -34,7 +34,7 @@ import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.master.joda.tradetrack.widget.WidgetService;
+import com.master.joda.tradetrack.widget.AppWidgetIntentService;
 
 import java.util.Arrays;
 
@@ -131,7 +131,7 @@ public class MainActivity extends AppCompatActivity
                     );
                 } else {
                     displayHomeFragment();
-                    WidgetService.startActionUpdateWidget(MainActivity.this);
+                    AppWidgetIntentService.startActionUpdateWidget(MainActivity.this);
                 }
             }
         };

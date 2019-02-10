@@ -41,7 +41,7 @@ public class AppWidget extends AppWidgetProvider {
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
 
-        WidgetService.startActionUpdateWidget(context);
+        AppWidgetIntentService.startActionUpdateWidget(context);
     }
 
     @Override
