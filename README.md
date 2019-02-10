@@ -11,6 +11,15 @@ the profit made daily.
 * Widget to show profit made in present day.
 * Uses an IntentService to update widget.
 
+## Screenshots
+<img src="screenshots/Screenshot01_start.png" vspace="5" align="left" width=273 />
+<img src="screenshots/Screenshot02_reg.png" vspace="5" align="left" width=273 />
+<img src="screenshots/Screenshot03_add_item.png" vspace="5" width=273 />
+<img src="screenshots/Screenshot04_home.png" vspace="5" align="left" width=273 />
+<img src="screenshots/Screenshot05_view_records.png" vspace="5" width=273 />
+
+<br>
+
 ### Prerequisites
 * JavaSE 7
 * Android Studio 3.2.1 or later
