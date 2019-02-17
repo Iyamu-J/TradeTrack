@@ -74,7 +74,7 @@ public class MainActivity extends AppCompatActivity
 //        enableStrictMode();
 
         MobileAds.initialize(this,
-                getString(R.string.admob_app_id));
+                getString(R.string.ad_mob_app_id));
         mAdView = findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder()
                 .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)

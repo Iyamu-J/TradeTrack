@@ -57,6 +57,10 @@ public class AddItemActivity extends AppCompatActivity {
         setContentView(R.layout.activity_add_item);
         ButterKnife.bind(this);
 
+        MobileAds.initialize(this,
+                getString(R.string.ad_mob_app_id));
+        initInterstitialAd();
+
         mFirebaseAuth = FirebaseAuth.getInstance();
         mDatabaseReference = FirebaseDatabase.getInstance().getReference().child("items");
 
@@ -88,16 +92,15 @@ public class AddItemActivity extends AppCompatActivity {
                         mDatabaseReference.child(userId)
                                 .child(mItemId)
                                 .setValue(item);
-                        showInterstitialAd();
-//                        finish();
+                        if (mInterstitialAd != null && mInterstitialAd.isLoaded()) {
+                            mInterstitialAd.show();
+                        } else {
+                            finish();
+                        }
                     }
                 }
             }
         });
-
-        MobileAds.initialize(this,
-                getString(R.string.admob_app_id));
-        initInterstitialAd();
     }
 
     @Override
@@ -171,7 +174,7 @@ public class AddItemActivity extends AppCompatActivity {
 
     private void initInterstitialAd() {
         mInterstitialAd = new InterstitialAd(this);
-        mInterstitialAd.setAdUnitId(getString(R.string.interstitial_ad_unit_id));
+        mInterstitialAd.setAdUnitId(getString(R.string.add_item_interstitial_ad_unit_id));
         mInterstitialAd.setAdListener(new AdListener() {
             @Override
             public void onAdClosed() {
@@ -184,7 +187,6 @@ public class AddItemActivity extends AppCompatActivity {
         if (!mInterstitialAd.isLoading() && !mInterstitialAd.isLoaded()) {
             AdRequest adRequest = new AdRequest.Builder()
                     .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
-                    .addTestDevice("18110811144C3B76421A1668CF660726")
                     .build();
             mInterstitialAd.loadAd(adRequest);
         }
